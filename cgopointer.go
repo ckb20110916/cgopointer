@@ -15,7 +15,7 @@ type CgoPointer struct {
 	mapper sync.Map
 }
 
-func (p *CgoPointer) Save(val any) unsafe.Pointer {
+func (cgo *CgoPointer) Save(val any) unsafe.Pointer {
 	if val == nil {
 		return nil
 	}
@@ -23,13 +23,13 @@ func (p *CgoPointer) Save(val any) unsafe.Pointer {
 	if ptr == nil {
 		panic("can't allocate 'cgo-pointer hack index pointer': ptr == nil")
 	}
-	p.mapper.Store(ptr, val)
+	cgo.mapper.Store(ptr, val)
 	return ptr
 }
 
-func (p *CgoPointer) Restore(ptr unsafe.Pointer) (v any) {
+func (cgo *CgoPointer) Restore(ptr unsafe.Pointer) (v any) {
 	if ptr != nil {
-		vv, ok := p.mapper.Load(ptr)
+		vv, ok := cgo.mapper.Load(ptr)
 		if ok {
 			return vv
 		}
@@ -37,9 +37,9 @@ func (p *CgoPointer) Restore(ptr unsafe.Pointer) (v any) {
 	return
 }
 
-func (p *CgoPointer) Unref(ptr unsafe.Pointer) {
+func (cgo *CgoPointer) Unref(ptr unsafe.Pointer) {
 	if ptr != nil {
-		_, ok := p.mapper.LoadAndDelete(ptr)
+		_, ok := cgo.mapper.LoadAndDelete(ptr)
 		if ok {
 			C.free(ptr)
 		}
