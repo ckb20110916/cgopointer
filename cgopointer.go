@@ -7,10 +7,6 @@ import (
 	"unsafe"
 )
 
-func New() *CgoPointer {
-	return &CgoPointer{}
-}
-
 type CgoPointer struct {
 	mapper sync.Map
 }
